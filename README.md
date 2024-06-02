@@ -1,49 +1,43 @@
-"# SSHer" 
+# SSHer - Secure Shell Client
 
-SSHer: Secure Shell Access Manager
-Overview
-SSHer is a web application designed to simplify the management of SSH server credentials and facilitate secure shell access to multiple servers through a user-friendly interface. With SSHer, users can securely store their SSH server credentials and seamlessly connect to their servers from any browser.
+## Introduction
 
-Features
-User Registration and Authentication: Users can create an account and securely log in to SSHer using their username and password.
+SSHer is a web-based Secure Shell (SSH) client that allows users to securely access remote servers directly from their web browser. It provides an intuitive interface for managing SSH connections and executing commands on remote servers.
 
-SSH Credential Management: Once logged in, users can add, edit, and delete multiple SSH server credentials, including host, port, username, and password.
+## Features
 
-Secure Connection Handling: SSHer ensures the secure handling of sensitive information by encrypting user passwords and securely transmitting data over the network.
+- **User Registration:** Users can register an account to securely manage their SSH credentials.
+- **SSH Server Management:** Users can add, edit, and delete SSH server credentials.
+- **SSH Terminal:** Users can access the SSH terminal for each saved server and execute commands directly from the browser.
+- **User Authentication:** User authentication is implemented using JSON Web Tokens (JWT) for secure login and session management.
 
-SSH Terminal Interface: Users can interact with their SSH servers directly from the browser using a terminal-like interface, allowing them to execute commands and manage server resources.
+## Technologies Used
 
-How It Works
-User Registration: Users create an account by providing a unique username, email, and password. Upon successful registration, they can log in to the application.
+- **Backend:** Express.js, MongoDB, JWT
+- **Frontend:** HTML, CSS, JavaScript
+- **Deployment:** Docker (optional)
 
-SSH Credential Management: After logging in, users can navigate to the SSH Credential Management page, where they can add, edit, and delete SSH server credentials. Each credential includes details such as host, port, username, and password.
+## Installation and Setup
 
-SSH Terminal Access: When users want to connect to an SSH server, they can select a saved credential from the list and click on it to initiate an SSH connection. This opens a new page with a terminal interface where users can execute commands and interact with the server.
+1. Clone the SSHer repository from [GitHub](https://github.com/nirravv/ssher).
+2. Install dependencies for both the backend and frontend.
+3. Configure environment variables:
+    - Set up MongoDB connection string.
+    - Generate a random JWT secret key.
+4. Start the server and navigate to the application URL in your web browser.
 
-Secure Communication: SSHer ensures the security of user data by encrypting passwords and transmitting data over HTTPS. User sessions are managed securely to prevent unauthorized access to sensitive information.
+## Usage
 
-Getting Started
-To set up SSHer on your local machine, follow these steps:
+1. Register a new account or log in with existing credentials.
+2. Add SSH server credentials in the user dashboard.
+3. Access the SSH terminal for each saved server and execute commands.
+4. Manage SSH server credentials as needed.
 
-Clone the Repository: Clone the SSHer repository from GitHub to your local machine.
+## License
 
-Install Dependencies: Navigate to the project directory and run npm install to install the required dependencies.
+SSHer is open-source software released under the [MIT License](./LICENSE). Feel free to use, modify, and distribute it according to the terms of the license.
 
-Configure Environment Variables: Create a .env file in the project root directory and define environment variables such as PORT, MONGODB_URL, and JWT_SECRET.
+## Author
 
-Start the Server: Run npm start to start the Express.js server. The server will start listening for incoming connections on the specified port.
+SSHer is developed and maintained by [Nirav Chaudhari](https://github.com/nirravv).
 
-Access the Application: Open a web browser and navigate to http://localhost:<PORT> to access the SSHer web application. You can now register an account, log in, and start managing your SSH server credentials.
-
-Technologies Used
-Backend: Node.js, Express.js, MongoDB
-Frontend: HTML, CSS, JavaScript
-Authentication: JSON Web Tokens (JWT)
-SSH Interaction: SSH2 library for Node.js
-Contributors
-Nirav Chaudhari - Project Lead
-
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-Feel free to customize this Markdown template according to your project's specific details and requirements! Let me know if you need further assistance.
