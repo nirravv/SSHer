@@ -25,8 +25,11 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('public')); // Serve static files from the "public" directory
 
+// Import routes
 const authRoutes = require('./routes/authRoutes');
+const connectionsRoutes = require('./routes/connectionsRoutes');
 app.use('/auth', authRoutes);
+app.use('/connections', connectionsRoutes);
 
 let sshConnection = null;
 

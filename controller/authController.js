@@ -42,14 +42,14 @@ const LoginUser = async (req, res) => {
         // Generate JWT token
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        // Return success message and token
-        res.json({ message: 'Login successful', token });
+        // Send JWT token in response
+        res.status(200).json({ token });
+
     } catch (error) {
         console.error('Error logging in user:', error.message);
         res.status(500).json({ error: 'An unexpected error occurred' });
     }
 };
-
 
 
 module.exports = { RegisterUser, LoginUser};
