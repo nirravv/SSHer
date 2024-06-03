@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSH Client</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- Logout button -->
+    <button id="logoutBtn" class="logout-button">Logout</button>
+
+    <div class="left-panel">
+        <!-- Left panel content goes here -->
+        <button id="addSshConnectionBtn" class="add-ssh-connection-button">Add SSH Connection</button>
+        <ul id="sshConnectionList" class="ssh-connection-list">
+            <!-- List items for SSH connections -->
+            <li class="ssh-connection-item">SSH Connection 1</li>
+            <li class="ssh-connection-item">SSH Connection 2</li>
+            <!-- Add more list items as needed -->
+        </ul>
+    </div>
+    <div class="right-panel">
+        <!-- Right panel content goes here -->
+        <div class="terminal">
+            <!-- Terminal content goes here -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="sshCredentialsForm">
+                <label for="host">Host:</label>
+                <input type="text" id="host" name="host" required>
+                <label for="port">Port:</label>
+                <input type="number" id="port" name="port" required>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>
