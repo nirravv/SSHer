@@ -3,7 +3,6 @@ const User = require('../models/User');
 
 const authMiddleware = async (req, res, next) => {
     const token = req.headers.authorization;
-
     if (!token) {
         return res.status(401).json({ error: 'Authorization token not provided' });
     }

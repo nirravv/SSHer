@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const result = await response.json();
                 if (response.ok) {
-                    alert(result.message);
-                    window.location.href = `/connections?token=${result.token}`;
+                    localStorage.setItem('token', result.token); // Store the token in localStorage
+                    window.location.href = `/connections`;
                 } else {
                     alert(result.error);
                 }
@@ -85,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add event listener for submitting SSH credentials form
     const sshCredentialsForm = document.getElementById('sshCredentialsForm');
+    
     if (sshCredentialsForm) {
         sshCredentialsForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -92,14 +93,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const port = document.getElementById('port').value;
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-
+            
             try {
                 const token = localStorage.getItem('token'); // Retrieve user token from local storage
                 const response = await fetch('/connections/ssh-credentials', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` // Include user token in request headers
+                        'Authorization': `${token}` // Include user token in request headers
                     },
                     body: JSON.stringify({ host, port, username, password })
                 });
