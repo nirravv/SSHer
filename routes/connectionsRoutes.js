@@ -4,9 +4,29 @@ const SshCredentials = require('../models/SshCredentials'); // Import your SSH c
 const authMiddleware = require('../middleware/authMiddleware'); // Import your authentication middleware here
 
 // Define routes for handling connections
-router.get('/', (req, res) => {
+router.get('/',(req, res) => {
     // Logic for handling connections page
     res.sendFile('connections.html', { root: 'public/html' });
+});
+
+
+// Route for fetching connections data
+router.get('/ssh-credentials', authMiddleware, async (req, res) => {
+    try {
+        // Fetch connections data for the logged-in user
+        const connections = await SshCredentials.find({ user: req.user._id });
+        
+        // Check if connections exist
+        if (connections.length === 0) {
+            return res.status(200).json([]);
+        }
+        
+        // If connections exist, send them in the response
+        res.status(200).json(connections);
+    } catch (error) {
+        console.error('Error fetching connections:', error);
+        res.status(500).json({ error: 'An unexpected error occurred' });
+    }
 });
 
 // Route for handling SSH credentials submission
