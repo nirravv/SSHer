@@ -65,17 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
             try {
-                const response = await fetch('/auth/logout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                if (response.ok) {
-                    window.location.href = '/login';
-                } else {
-                    alert('Logout failed. Please try again.');
-                }
+                // Remove token from localStorage
+                localStorage.removeItem('token');
+    
+                // Redirect to login page
+                window.location.href = '/';
             } catch (error) {
                 console.error('Error:', error);
                 alert('An unexpected error occurred');
@@ -83,6 +77,41 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Check if the current page is connections and fetch data if so
+    if (window.location.pathname === '/connections') {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/'; // Redirect to login page if no token
+        } else {
+            // Fetch connections data
+            fetch('/connections/ssh-credentials', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to fetch connections');
+                }
+            })
+            .then(connections => {
+                // Display connections data
+                const connectionsList = document.getElementById('sshConnectionList');
+                if (connections.length === 0) {
+                    connectionsList.innerHTML = '<p>No connections added yet!</p>';
+                } else {
+                    connectionsList.innerHTML = connections.map(conn => `<p>${conn.host}:${conn.port}</p>`).join('');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching connections:', error);
+            });
+        }
+    }
     // Add event listener for submitting SSH credentials form
     const sshCredentialsForm = document.getElementById('sshCredentialsForm');
     
@@ -139,4 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('myModal').style.display = 'none';
         }
     };
+
 });
+
+
