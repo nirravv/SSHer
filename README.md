@@ -40,6 +40,9 @@ SSHer is a web-based Secure Shell (SSH) client that allows users to securely acc
     ```
 
 4. Start the server and navigate to the application URL in your web browser.
+    ```
+    npm run dev
+    ```
 
 ## Usage
 
