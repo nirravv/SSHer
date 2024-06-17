@@ -33,6 +33,12 @@ app.use('/connections', connectionsRoutes);
 
 let sshConnection = null;
 
+// Main Home Page Route
+app.get('/',(req, res) => {
+    // Logic for handling connections page
+    res.sendFile('index.html', { root: 'public/html' });
+});
+
 app.post('/ssh/connect', (req, res) => {
     const { host, port, username, password } = req.body;
 
