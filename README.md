@@ -20,11 +20,29 @@ SSHer is a web-based Secure Shell (SSH) client that allows users to securely acc
 ## Installation and Setup
 
 1. Clone the SSHer repository from [GitHub](https://github.com/nirravv/ssher).
-2. Install dependencies for both the backend and frontend.
+    ```
+    git clone https://github.com/nirravv/ssher
+    ```
+2. CD in to SSHer directory.
+    ```
+    cd SSHer
+    ```
+3. Install dependencies for node.
+   ```
+    npm install
+   ```
 3. Configure environment variables:
-    - Set up MongoDB connection string.
-    - Generate a random JWT secret key.
+    - create .env file to main project folder
+    - Set up MongoDB connection string inside that .env file.
+    - Generate a random JWT secret key in .env file. To generate JWT Random String run following command in main project directory.
+    ```
+    node jwt-key-generate.js
+    ```
+
 4. Start the server and navigate to the application URL in your web browser.
+    ```
+    npm run dev
+    ```
 
 ## Usage
 
