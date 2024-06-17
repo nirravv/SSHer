@@ -1,56 +1,22 @@
+/* connections.css */
+
+/* Base styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
 }
 
-#app {
-    width: 100%;
-    max-width: 600px;
-    background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+/* Logout button styles */
+.logout-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000; /* Ensures it's above other content */
 }
 
-form {
-    margin-bottom: 20px;
-}
-
-input[type="text"], input[type="email"], input[type="password"], input[type="number"] {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-}
-
-button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-pre {
-    background: #333;
-    color: #fff;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-
+/* Sidebar styles */
 .left-panel {
     width: 30%;
     height: 100vh;
@@ -106,7 +72,6 @@ pre {
     background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
-/* Modal content */
 .modal-content {
     background-color: #fefefe;
     margin: 15% auto; /* 15% from the top and centered */
@@ -115,7 +80,6 @@ pre {
     width: 80%; /* Could be more or less, depending on screen size */
 }
 
-/* Close button */
 .close {
     color: #aaa;
     float: right;
@@ -130,14 +94,9 @@ pre {
     cursor: pointer;
 }
 
-/* Form styles */
 form {
     display: flex;
     flex-direction: column;
-}
-
-label {
-    margin-bottom: 10px;
 }
 
 input[type='text'],
@@ -160,11 +119,14 @@ button[type='submit']:hover {
     background-color: #45a049;
 }
 
+button[id='logoutBtn'] {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
 
-/* Positioning the logout button */
-.logout-button {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 1000; /* Ensures it's above other content */
+button[id='logoutBtn']:hover {
+    background-color: #45a049;
 }
