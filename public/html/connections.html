@@ -5,21 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSH Client</title>
     <link rel="stylesheet" href="../css/connections.css">
+    <link rel="stylesheet" href="/node_modules/@xterm/xterm/css/xterm.css">
+    <script src="/node_modules/@xterm/xterm/lib/xterm.js"></script>
 </head>
 <body>
-    <!-- Logout button -->
-    <button id="logoutBtn" class="logout-button">Logout</button>
-
     <div class="left-panel">
         <!-- Left panel content goes here -->
         <button id="addSshConnectionBtn" class="add-ssh-connection-button">Add SSH Connection</button>
-        <ul id="sshConnectionList" class="ssh-connection-list">
-        </ul>
+        <ul id="sshConnectionList" class="ssh-connection-list"></ul>
+        <button id="logoutBtn" class="logout-button">Logout</button>
     </div>
     <div class="right-panel">
         <!-- Right panel content goes here -->
-        <div class="terminal">
-            <!-- Terminal content goes here -->
+        <div class="terminal-container">
+            <div id="terminal"></div>
         </div>
     </div>
 
@@ -41,7 +40,7 @@
             </form>
         </div>
     </div>
-
+    
     <script src="../js/connections.js"></script>
 </body>
 </html>

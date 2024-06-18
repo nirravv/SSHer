@@ -1,29 +1,25 @@
-/* connections.css */
-
 /* Base styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     color: #333;
     margin: 0;
-}
-
-/* Logout button styles */
-.logout-button {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 1000; /* Ensures it's above other content */
+    display: flex;
+    height: 100vh;
+    overflow: hidden; /* Prevents body from having a scrollbar */
 }
 
 /* Sidebar styles */
 .left-panel {
-    width: 30%;
+    width: 20%;  /* Adjust width of left-panel */
     height: 100vh;
     background-color: #f0f0f0;
     padding: 20px;
     box-sizing: border-box;
-    float: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: auto; /* Allows scrolling if content overflows */
 }
 
 .add-ssh-connection-button {
@@ -45,6 +41,7 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
+    flex-grow: 1; /* Ensures the list takes available space */
 }
 
 .ssh-connection-item {
@@ -57,6 +54,54 @@ body {
 
 .ssh-connection-item:hover {
     background-color: #f0f0f0;
+}
+
+/* Right panel styles */
+.right-panel {
+    width: 80%;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Ensures the terminal does not overflow */
+}
+
+.terminal-container {
+    flex-grow: 1;
+    display: flex;
+    background-color: black;
+    overflow: hidden !important; /* Prevents scrollbars in the terminal container */
+}
+
+/* Terminal specific styles */
+#terminal {
+    width: 100%;
+    height: 100%;
+}
+
+/* Override xterm.js default styles */
+.xterm {
+    overflow: hidden !important; /* Prevent scrollbars */
+}
+
+.xterm-viewport {
+    overflow-y: hidden !important; /* Prevent vertical scrollbar */
+    overflow-x: hidden !important; /* Prevent horizontal scrollbar */
+}
+
+/* Logout button styles */
+.logout-button {
+    align-self: flex-end; /* Ensures the button is at the bottom */
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background-color: #45a049;
 }
 
 /* Modal styles */
@@ -116,17 +161,5 @@ button[type='submit'] {
 }
 
 button[type='submit']:hover {
-    background-color: #45a049;
-}
-
-button[id='logoutBtn'] {
-    padding: 10px 20px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button[id='logoutBtn']:hover {
     background-color: #45a049;
 }
