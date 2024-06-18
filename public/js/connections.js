@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Focus the terminal when the page loads
     term.focus();
 
+    
     // Handle keyboard input
     term.onData((data) => {
         // Check for Enter key press (Carriage Return \r or New Line \n)
