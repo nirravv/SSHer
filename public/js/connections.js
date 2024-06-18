@@ -1,4 +1,39 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Terminal initialization
+    const term = new Terminal({
+        scrollback: 1000,
+        theme: {
+            background: '#000000'
+        },
+        // fontFamily: 'DejaVu Mono',
+        fontSize: 14,
+        cursorBlink: true
+    });
+
+    term.open(document.getElementById('terminal'));
+    term.write('Welcome to \x1B[1;3;31mSSHer\x1B[0m $ ');
+
+    // Ensure the terminal resizes properly
+    window.addEventListener('resize', () => {
+        term.fit();
+    });
+
+    // Focus the terminal when the page loads
+    term.focus();
+
+    // Handle keyboard input
+    term.onData((data) => {
+        // Check for Enter key press (Carriage Return \r or New Line \n)
+        if (data === '\r' || data === '\n') {
+            // Handle Enter press: Move cursor to a new line
+            term.write('\r\n'); // Write new line characters
+            // Here you can handle executing a command or any other logic
+        } else {
+            // Normal key press: Write the character to the terminal
+            term.write(data);
+        }
+    });
+
     // Add event listener for logging out
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {

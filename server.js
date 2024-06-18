@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const { Client } = require('ssh2');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -24,6 +25,8 @@ mongoose.connect(mongodbUrl, { useNewUrlParser: true, useUnifiedTopology: true }
 app.use(express.json());
 app.use(cors());
 app.use(express.static('public')); // Serve static files from the "public" directory
+// Serve static files from node_modules
+app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
