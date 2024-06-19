@@ -1,6 +1,7 @@
 // utils/encryptionUtil.js
 
 const crypto = require('crypto');
+require('dotenv').config();
 
 // Use environment variables for key and algorithm for better security practices
 const algorithm = 'aes-256-cbc';

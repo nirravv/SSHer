@@ -1,5 +1,3 @@
-// models/SshCredentials.js
-
 const mongoose = require('mongoose');
 const { encrypt, decrypt } = require('../utils/encryptionUtil');
 
@@ -27,7 +25,7 @@ const sshCredentialsSchema = new mongoose.Schema({
     }
 });
 
-sshCredentialsSchema.pre('save', function (next) {
+sshCredentialsSchema.pre('save', async function (next) {
     const sshCredentials = this;
 
     // Encrypt the password only if it has been modified or is new
@@ -37,7 +35,7 @@ sshCredentialsSchema.pre('save', function (next) {
 
     try {
         // Encrypt the password
-        const encryptedPassword = encrypt(sshCredentials.password);
+        const encryptedPassword = await encrypt(sshCredentials.password);
         // Replace the plain password with the encrypted one
         sshCredentials.password = encryptedPassword;
         next();
@@ -47,8 +45,12 @@ sshCredentialsSchema.pre('save', function (next) {
 });
 
 // Method to decrypt password
-sshCredentialsSchema.methods.decryptPassword = function () {
-    return decrypt(this.password);
+sshCredentialsSchema.methods.decryptPassword = async function () {
+    try {
+        return await decrypt(this.password);
+    } catch (error) {
+        throw new Error('Failed to decrypt password');
+    }
 };
 
 const SshCredentials = mongoose.model('SshCredentials', sshCredentialsSchema);

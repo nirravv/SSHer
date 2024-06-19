@@ -1,11 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Terminal initialization
     const term = new Terminal({
         scrollback: 1000,
         theme: {
             background: '#000000'
         },
-        // fontFamily: 'DejaVu Mono',
         fontSize: 14,
         cursorBlink: true
     });
@@ -21,43 +19,75 @@ document.addEventListener('DOMContentLoaded', () => {
     // Focus the terminal when the page loads
     term.focus();
 
-    
+    let commandBuffer = ''; // Buffer to store command input
+    let ws = null; // WebSocket instance
+    let sessionId = null; // Session ID for WebSocket connection
+
     // Handle keyboard input
     term.onData((data) => {
         // Check for Enter key press (Carriage Return \r or New Line \n)
         if (data === '\r' || data === '\n') {
-            // Handle Enter press: Move cursor to a new line
-            term.write('\r\n'); // Write new line characters
-            // Here you can handle executing a command or any other logic
+            // Handle Enter press: Execute the command
+            if (commandBuffer.trim() !== '') {
+                executeCommand(commandBuffer.trim());
+                commandBuffer = ''; // Clear command buffer
+            }
+            term.write('\r\n$ '); // Write new prompt
+        } else if (data === '\x7F') {
+            // Handle Backspace: Remove last character from buffer and terminal
+            if (commandBuffer.length > 0) {
+                commandBuffer = commandBuffer.slice(0, -1);
+                term.write('\b \b');
+            }
         } else {
-            // Normal key press: Write the character to the terminal
+            // Normal key press: Append the character to the command buffer
+            commandBuffer += data;
             term.write(data);
         }
     });
 
-    // Add event listener for logging out
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                // Remove token from localStorage
-                localStorage.removeItem('token');
+    // Function to execute command
+    function executeCommand(command) {
+        if (!ws) {
+            console.error('WebSocket connection not established');
+            return;
+        }
 
-                // Redirect to login page
-                window.location.href = '/';
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An unexpected error occurred');
-            }
-        });
+        const message = JSON.stringify({ action: 'exec', sshSessionId: sessionId, command });
+        ws.send(message); // Send command with session ID to server
     }
 
-    // Check if the current page is connections and fetch data if so
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = '/'; // Redirect to login page if no token
-    } else {
-        // Fetch connections data
+    // WebSocket connection handling
+    function connectWebSocket(sessionId) {
+        ws = new WebSocket(`ws://localhost:3000/ssh-connect/${sessionId}`);
+
+        ws.onopen = function() {
+            console.log('WebSocket connection established');
+        };
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            if (data.action === 'output') {
+                term.write(data.output);
+            } else if (data.action === 'error') {
+                term.write(`Error: ${data.error}\r\n`);
+            }
+        };
+
+        ws.onclose = function() {
+            term.write('\r\nConnection closed');
+            ws = null; // Reset WebSocket instance on close
+        };
+    }
+
+    // Fetch SSH connections and display them
+    function fetchConnections() {
+        var token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/'; // Redirect to login page if no token
+            return;
+        }
+
         fetch('/connections/ssh-credentials', {
             method: 'GET',
             headers: {
@@ -65,28 +95,62 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Authorization': `${token}`
             }
         })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Failed to fetch connections');
-            }
-        })
+        .then(response => response.ok ? response.json() : Promise.reject('Failed to fetch connections'))
         .then(connections => {
-            // Display connections data
-            const connectionsList = document.getElementById('sshConnectionList');
-            if (connections.length === 0) {
-                connectionsList.innerHTML = '<p>No connections added yet!</p>';
-            } else {
-                connectionsList.innerHTML = connections.map(conn => `<p>${conn.host}:${conn.port}</p>`).join('');
-            }
+            displayConnections(connections);
         })
         .catch(error => {
             console.error('Error fetching connections:', error);
         });
     }
 
-    // Add event listener for submitting SSH credentials form
+    // Display SSH connections in UI
+    function displayConnections(connections) {
+        var connectionsList = document.getElementById('sshConnectionList');
+        if (connections.length === 0) {
+            connectionsList.innerHTML = '<p>No connections added yet!</p>';
+        } else {
+            connectionsList.innerHTML = '';
+            connections.forEach(conn => {
+                var listItem = document.createElement('li');
+                listItem.className = 'ssh-connection-item';
+                listItem.textContent = `${conn.host}:${conn.port}`;
+                listItem.addEventListener('click', function() {
+                    connectToSSH(conn._id); // Connect to SSH server when clicked
+                });
+                connectionsList.appendChild(listItem);
+            });
+        }
+    }
+
+    // Connect to SSH server
+    function connectToSSH(connectionId) {
+        var token = localStorage.getItem('token');
+        fetch(`/connections/ssh-connect/${connectionId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${token}`
+            }
+        })
+        .then(response => response.ok ? response.json() : Promise.reject('Failed to connect'))
+        .then(data => {
+            if (data.success) {
+                sessionId = data.sshSessionId; // Store session ID
+                connectWebSocket(sessionId); // Start WebSocket connection
+            } else {
+                alert('Failed to connect to SSH');
+            }
+        })
+        .catch(error => {
+            console.error('Error connecting to SSH:', error);
+        });
+    }
+
+    // Initialize SSH connections when the page loads
+    fetchConnections();
+
+    // Event listener for SSH credentials form submission
     const sshCredentialsForm = document.getElementById('sshCredentialsForm');
     if (sshCredentialsForm) {
         sshCredentialsForm.addEventListener('submit', async (e) => {
@@ -97,12 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('password').value;
 
             try {
-                const token = localStorage.getItem('token'); // Retrieve user token from local storage
+                const token = localStorage.getItem('token');
                 const response = await fetch('/connections/ssh-credentials', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `${token}` // Include user token in request headers
+                        'Authorization': `${token}`
                     },
                     body: JSON.stringify({ host, port, username, password })
                 });
@@ -110,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.ok) {
                     alert(result.message);
                     sshCredentialsForm.reset();
+                    fetchConnections(); // Refresh connections list
                 } else {
                     alert(result.error);
                 }
@@ -120,25 +185,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Open modal when add SSH connection button is clicked
-    const addSshConnectionBtn = document.getElementById('addSshConnectionBtn');
-    if (addSshConnectionBtn) {
-        addSshConnectionBtn.addEventListener('click', function() {
-            document.getElementById('myModal').style.display = 'block';
+    // Event listener for logout button
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                localStorage.removeItem('token'); // Remove token from localStorage
+                window.location.href = '/'; // Redirect to login page
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An unexpected error occurred');
+            }
         });
     }
 
-    // Close modal when close button or outside modal is clicked
-    const closeBtn = document.getElementsByClassName('close')[0];
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function() {
-            document.getElementById('myModal').style.display = 'none';
-        });
-    }
-
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('myModal')) {
-            document.getElementById('myModal').style.display = 'none';
-        }
-    };
 });
